@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 
 // Enable CORS for your frontend hosted on GitHub
-app.use(cors({ origin: "https://kumarmalay.github.io" }));
+app.use(cors({ origin: "https://kumarmalay.github.io/Bajaj/" }));
 app.use(express.json());
 
 // Function to process the input data
