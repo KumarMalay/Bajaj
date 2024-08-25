@@ -2,8 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
-// Enable CORS and JSON parsing
-app.use(cors());
+// Enable CORS for your frontend hosted on GitHub
+app.use(cors({ origin: "https://kumarmalay.github.io/Bajaj/" }));
 app.use(express.json());
 
 // Function to process the input data
@@ -71,4 +71,4 @@ app.get("/bfhl", (req, res) => {
   res.status(200).json({ operation_code: 1 });
 });
 
-module.exports = app; // Export app for Vercel
+module.exports = app;
