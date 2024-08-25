@@ -8,8 +8,8 @@
   ],
   "routes": [
     {
-      "src": "/bfhl",
-      "dest": "/backend/server.js"
+      "src": "",
+      "dest": "server.js"
     }
   ]
 }
