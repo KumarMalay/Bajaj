@@ -1,13 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Setup CORS and JSON parsing
+// Middleware to enable CORS and parse JSON
 app.use(cors());
 app.use(express.json());
 
-// Extract numbers, alphabets, and highest lowercase letter from data
+// Function to process the input data
 function processData(data) {
   const numbers = [];
   const alphabets = [];
@@ -30,27 +29,36 @@ function processData(data) {
   return { numbers, alphabets, highestLowercase };
 }
 
-// Handle POST request to process data
+// POST endpoint to process data
 app.post("/bfhl", (req, res) => {
-  console.log("POST request received");
+  console.log("POST request received at /bfhl");
 
-  const { data } = req.body;
+  const { data, user_name, email, roll_number } = req.body;
 
+  // Validate if data is an array
   if (!Array.isArray(data)) {
-    console.log("Invalid input");
     return res.status(400).json({
       is_success: false,
-      message: "Invalid input, expected an array.",
+      message: "Invalid input, expected an array of data.",
+    });
+  }
+
+  // Validate user details
+  if (!user_name || !email || !roll_number) {
+    return res.status(400).json({
+      is_success: false,
+      message: "Missing user details: name, email, or roll number.",
     });
   }
 
   const { numbers, alphabets, highestLowercase } = processData(data);
 
+  // Prepare the response
   const response = {
     is_success: true,
-    user_id: "john_doe_17091999",
-    email: "john@xyz.com",
-    roll_number: "ABCD123",
+    user_id: `${user_name.toLowerCase().replace(/\s+/g, "_")}_17091999`, // Custom ID generation
+    email,
+    roll_number,
     numbers,
     alphabets,
     highest_lowercase_alphabet: highestLowercase ? [highestLowercase] : [],
@@ -60,12 +68,9 @@ app.post("/bfhl", (req, res) => {
   res.json(response);
 });
 
-// Handle GET request with hardcoded operation code
+// GET endpoint to return operation_code
 app.get("/bfhl", (req, res) => {
   res.status(200).json({ operation_code: 1 });
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// No need to explicitly start the server for Vercel as it automatically handles the server lifecycle
