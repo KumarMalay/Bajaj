@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>21BLC1015</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        padding: 10px;
+      }
+      input,
+      button {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+      }
+      .response-container {
+        margin-top: 20px;
+      }
+      p {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>BFHL App</h1>
+      <input
+        type="text"
+        id="jsonInput"
+        placeholder='Enter JSON (e.g., {"data": ["A","b","1","2","Z"]})'
+      />
+      <button id="submitButton">Submit</button>
+      <div>
+        <h3>Filters</h3>
+        <label
+          ><input type="checkbox" value="Numbers" id="filterNumbers" />
+          Numbers</label
+        >
+        <label
+          ><input type="checkbox" value="Alphabets" id="filterAlphabets" />
+          Alphabets</label
+        >
+        <label
+          ><input
+            type="checkbox"
+            value="HighestLowercase"
+            id="filterLowercase"
+          />
+          Highest Lowercase Alphabet</label
+        >
+      </div>
+      <div class="response-container" id="responseContainer"></div>
+    </div>
+
+    <script>
+      document
+        .getElementById("submitButton")
+        .addEventListener("click", async () => {
+          const jsonInput = document.getElementById("jsonInput").value;
+          const filterNumbers =
+            document.getElementById("filterNumbers").checked;
+          const filterAlphabets =
+            document.getElementById("filterAlphabets").checked;
+          const filterLowercase =
+            document.getElementById("filterLowercase").checked;
+
+          try {
+            const jsonData = JSON.parse(jsonInput);
+
+            if (!jsonData.data || !Array.isArray(jsonData.data)) {
+              throw new Error(
+                'Invalid JSON: Missing "data" property or "data" is not an array'
+              );
+            }
+
+            const response = await fetch("http://localhost:3000/bfhl", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(jsonData),
+            });
+
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+
+            const data = await response.json();
+
+            let filteredResponse = {};
+            if (filterNumbers) {
+              filteredResponse.numbers = data.numbers;
+            }
+            if (filterAlphabets) {
+              filteredResponse.alphabets = data.alphabets;
+            }
+            if (filterLowercase) {
+              filteredResponse.highest_lowercase_alphabet =
+                data.highest_lowercase_alphabet;
+            }
+
+            document.getElementById(
+              "responseContainer"
+            ).innerHTML = `<pre>${JSON.stringify(
+              filteredResponse,
+              null,
+              2
+            )}</pre>`;
+          } catch (error) {
+            document.getElementById(
+              "responseContainer"
+            ).innerHTML = `<p>Invalid JSON or request failed. Error: ${error.message}</p>`;
+          }
+        });
+    </script>
+  </body>
+</html>
