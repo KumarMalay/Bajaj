@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
-// Middleware to enable CORS and parse JSON
+// Enable CORS and JSON parsing
 app.use(cors());
 app.use(express.json());
 
@@ -12,6 +12,7 @@ function processData(data) {
   const alphabets = [];
   let highestLowercase = null;
 
+  // Separate numbers and alphabets, find the highest lowercase alphabet
   data.forEach((item) => {
     if (!isNaN(item)) {
       numbers.push(item);
@@ -31,11 +32,9 @@ function processData(data) {
 
 // POST endpoint to process data
 app.post("/bfhl", (req, res) => {
-  console.log("POST request received at /bfhl");
-
   const { data, user_name, email, roll_number } = req.body;
 
-  // Validate if data is an array
+  // Validate data format
   if (!Array.isArray(data)) {
     return res.status(400).json({
       is_success: false,
@@ -53,10 +52,10 @@ app.post("/bfhl", (req, res) => {
 
   const { numbers, alphabets, highestLowercase } = processData(data);
 
-  // Prepare the response
+  // Response object
   const response = {
     is_success: true,
-    user_id: `${user_name.toLowerCase().replace(/\s+/g, "_")}_17091999`, // Custom ID generation
+    user_id: `${user_name.toLowerCase().replace(/\s+/g, "_")}_17091999`, // Custom user ID
     email,
     roll_number,
     numbers,
@@ -64,13 +63,12 @@ app.post("/bfhl", (req, res) => {
     highest_lowercase_alphabet: highestLowercase ? [highestLowercase] : [],
   };
 
-  console.log("Response:", response);
   res.json(response);
 });
 
-// GET endpoint to return operation_code
+// GET endpoint for the operation code
 app.get("/bfhl", (req, res) => {
   res.status(200).json({ operation_code: 1 });
 });
 
-// No need to explicitly start the server for Vercel as it automatically handles the server lifecycle
+// No need to explicitly call `app.listen()` for Vercel, it will handle it automatically

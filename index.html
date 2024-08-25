@@ -71,6 +71,7 @@
             document.getElementById("filterLowercase").checked;
 
           try {
+            // Validate JSON input
             const jsonData = JSON.parse(jsonInput);
 
             if (!jsonData.data || !Array.isArray(jsonData.data)) {
@@ -79,6 +80,7 @@
               );
             }
 
+            // Send data to backend
             const response = await fetch(
               "https://bajaj-4a5l-ovudat69q-kumar-malays-projects.vercel.app/bfhl",
               {
@@ -94,20 +96,17 @@
               throw new Error("Network response was not ok");
             }
 
+            // Parse and filter response data
             const data = await response.json();
-
             let filteredResponse = {};
-            if (filterNumbers) {
-              filteredResponse.numbers = data.numbers;
-            }
-            if (filterAlphabets) {
-              filteredResponse.alphabets = data.alphabets;
-            }
-            if (filterLowercase) {
+
+            if (filterNumbers) filteredResponse.numbers = data.numbers;
+            if (filterAlphabets) filteredResponse.alphabets = data.alphabets;
+            if (filterLowercase)
               filteredResponse.highest_lowercase_alphabet =
                 data.highest_lowercase_alphabet;
-            }
 
+            // Display the filtered response
             document.getElementById(
               "responseContainer"
             ).innerHTML = `<pre>${JSON.stringify(
