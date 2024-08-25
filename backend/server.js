@@ -55,7 +55,7 @@ app.post("/bfhl", (req, res) => {
   // Response object
   const response = {
     is_success: true,
-    user_id: `${user_name.toLowerCase().replace(/\s+/g, "_")}_17091999`, // Custom user ID
+    user_id: `${user_name.toLowerCase().replace(/\s+/g, "_")}_17091999`,
     email,
     roll_number,
     numbers,
@@ -71,4 +71,4 @@ app.get("/bfhl", (req, res) => {
   res.status(200).json({ operation_code: 1 });
 });
 
-// No need to explicitly call `app.listen()` for Vercel, it will handle it automatically
+module.exports = app; // Export app for Vercel
